@@ -9,8 +9,8 @@ import React, { Suspense } from 'react'
 const List =async ({searchParams} : {searchParams: any}) => {
 
   const wixClient =await wixClientServer()
-  const id = (await wixClient.collections.getCollectionBySlug(searchParams.cat || 'all-products')).collection?._id
-  // console.log(id);
+  const id = (await wixClient.collections.getCollectionBySlug(searchParams?.cat || 'all-products')).collection?._id
+  console.log(id);
   
   
   return (
@@ -30,9 +30,9 @@ const List =async ({searchParams} : {searchParams: any}) => {
 
     <Filter />
 
-    <h1 className='text-xl mt-12 font-semibold'>Shoes for you</h1>
+    <h1 className='text-xl mt-12 font-semibold'>{searchParams?.cat || "All Products"} for you</h1>
     <Suspense fallback={<Skeleton />}>
-    <ProductList categoryId={id || '00000000-000000-000000-000000000001'} searchParams={''}/>
+      <ProductList categoryId={id || '00000000-000000-000000-000000000001'} searchParams={searchParams}/>
     </Suspense>
     
 

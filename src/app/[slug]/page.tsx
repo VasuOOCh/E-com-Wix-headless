@@ -3,14 +3,18 @@ import CustomizeProduct from '@/components/CustomizeProduct'
 import ProductImages from '@/components/ProductImages'
 import { wixClientServer } from '@/lib/wixClientServer'
 import Image from 'next/image'
-import { notFound } from 'next/navigation'
+import { notFound, useSearchParams } from 'next/navigation'
 import React from 'react'
 
 const Product = async ({ params }: { params: { slug: string } }) => {
 
     const wixClient = await wixClientServer()
     const product = (await wixClient.products.queryProducts().eq("slug", params.slug).find()).items[0];
-
+    
+    // console.log(product.variants);
+    
+    
+    
     if (!product) {
         return notFound()
     }
@@ -40,8 +44,11 @@ const Product = async ({ params }: { params: { slug: string } }) => {
                     }
                 </div>
 
-                <CustomizeProduct productId={product._id} variants={product.variants} productOptions={product.productOptions} />
-                <Add />
+                {
+                    product.variants && product.productOptions ? <CustomizeProduct productId={product._id!} variants={product.variants} productOptions={product.productOptions} /> : 
+                    <Add productId={product._id!} variantId={product.variants[0]._id} stockNumber={product.stock?.quantity || 0} />
+                }
+                
                 <div className="h-[2px] bg-gray-500" />
                 {
                     product.additionalInfoSections?.map((info: any, index: number) => (
